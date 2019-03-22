@@ -26,25 +26,25 @@
     import wepy from 'wepy'
 
     export default class Index extends wepy.page {
-        data = {
-            topics: [{
-                id: 1,
-                title: '测试1',
-                body: 'laravel 测试内容1'
-            }, {
-                id: 2,
-                title: '测试2',
-                body: 'laravel 测试内容2'
-            }, {
-                id: 3,
-                title: '测试3',
-                body: 'laravel 测试内容3'
-            },{
-                id: 4,
-                title: '测试4',
-                body: 'laravel 测试内容4'
-            },
-            ]
+      data = {
+        topics: [{
+          id: 1,
+          title: '测试1',
+          body: 'laravel 测试内容1'
+        }, {
+          id: 2,
+          title: '测试2',
+          body: 'laravel 测试内容2'
+        }, {
+          id: 3,
+          title: '测试3',
+          body: 'laravel 测试内容3'
+        }, {
+          id: 4,
+          title: '测试4',
+          body: 'laravel 测试内容4'
         }
+        ]
+      }
     }
 </script>
