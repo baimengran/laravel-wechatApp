@@ -1,13 +1,16 @@
 {
-  "description": "laravel wechat app projech",
-  "setting": {
-    "urlCheck": true,
-    "es6": false,
-    "postcss": false,
-    "minified": false
-  },
-  "compileType": "miniprogram",
-  "appid": "wxd1bca62ff44b2403",
-  "projectname": "laravel-wechatapp",
-  "miniprogramRoot": "./dist"
+	"description": "laravel wechat app projech",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true,
+		"autoAudits": false
+	},
+	"compileType": "miniprogram",
+	"appid": "wxd1bca62ff44b2403",
+	"projectname": "laravel-wechatapp",
+	"miniprogramRoot": "dist/",
+	"condition": {}
 }
