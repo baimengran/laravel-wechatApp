@@ -5,7 +5,8 @@
 <template>
     <view class="page">
         <view wx:if="{{loggedIn}}">
-            已登录
+            已登录 name:{{userInfo.name}}
+            <button type="warn" @tap="logout">退出登录</button>
         </view>
         <view wx:else>
             <navigator class="weui-cell weui-cell_access" url="/pages/auth/login">
@@ -18,6 +19,7 @@
 
 <script>
     import wepy from 'wepy'
+    import api from '@/untils/api'
 
     export default class User extends wepy.page {
       config = {
@@ -25,12 +27,46 @@
       }
 
       data = {
-        loggedIn: false
+            // 标记是否以登录
+        loggedIn: false,
+            // 用户信息
+        userInfo: null
       }
 
-      onShow() {
-        if (wepy.getStorageSync('access_token')) {
+      async onShow() {
+            // 获取缓存中的access_token
+        let accessToken = wepy.getStorageSync('access_token')
+
+            // token存在则说明以登录
+        if (accessToken) {
+                // 测试authRequest接口
+          let userResponse = await api.authRequest('user')
+          this.userInfo = userResponse.data
           this.loggedIn = true
+                // 手动调用 this.$apply() 方法，触发脏数据检查流程运行，
+                // 存在异步调用的方法中，要更新 data 中某个数据时必须调用一次 this.$apply()
+          this.$apply()
+        }
+      }
+
+      methods = {
+            // 退出
+        async logout(e) {
+          try {
+            let logoutResponse = await api.logout()
+                    // 退出成功的话清除信息
+            if (logoutResponse.statusCode === 204) {
+              this.logedIn = false
+              this.userInfo = null
+              this.$apply()
+            }
+          } catch (err) {
+            console.log(err)
+            wepy.showModal({
+              title: '提示',
+              content: '服务器错误，请联系管理员或重试'
+            })
+          }
         }
       }
     }

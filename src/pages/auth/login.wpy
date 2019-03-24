@@ -92,8 +92,8 @@
             if (authResponse.statusCode === 401) {
               this.error = true
               this.errorMessage = authResponse.data.message
-                        // 手动调用 this.$apply() 方法，触发脏数据检查流程运行，
-                        // 存在异步调用的方法中，要更新 data 中某个数据时必须调用一次 this.$apply()
+                // 手动调用 this.$apply() 方法，触发脏数据检查流程运行，
+                // 存在异步调用的方法中，要更新 data 中某个数据时必须调用一次 this.$apply()
               this.$apply()
             }
 
