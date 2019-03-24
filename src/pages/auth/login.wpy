@@ -38,6 +38,13 @@
                 </view>
             </view>
 
+            <view class="weui-agree_text">
+                如果还没有Laravel-Blog用户，您可以
+                <navigator url="/pages/auth/register" class="weui-agree__link">
+                    注册新用户
+                </navigator>
+            </view>
+
             <view class="weui-btn-area">
                 <button class="weui-btn" type="primary" @tap="submit">登录</button>
             </view>
@@ -47,7 +54,7 @@
 
 <script>
     import wepy from 'wepy'
-    import api from '@/untils/api'
+    import api from '@/utils/api'
 
     export default class Login extends wepy.page {
       config = {
@@ -92,8 +99,8 @@
             if (authResponse.statusCode === 401) {
               this.error = true
               this.errorMessage = authResponse.data.message
-                // 手动调用 this.$apply() 方法，触发脏数据检查流程运行，
-                // 存在异步调用的方法中，要更新 data 中某个数据时必须调用一次 this.$apply()
+                        // 手动调用 this.$apply() 方法，触发脏数据检查流程运行，
+                        // 存在异步调用的方法中，要更新 data 中某个数据时必须调用一次 this.$apply()
               this.$apply()
             }
 
