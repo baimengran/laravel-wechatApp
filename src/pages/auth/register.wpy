@@ -184,6 +184,11 @@
         }
       }
 
+        /**
+         * 提交注册表单
+         * @param e
+         * @returns {Promise<boolean>}
+         */
       async submit(e) {
         this.errors = {}
           // 检查验证码是否已发送

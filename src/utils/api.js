@@ -145,6 +145,11 @@ const authRequest = async (options, showLoading = true) => {
   return request(options, showLoading)
 }
 
+/**
+ * 退出登录
+ * @param params
+ * @returns {Promise<any>}
+ */
 const logout = async (params = {}) => {
   let accessToken = wepy.getStorageSync('access_token')
     // 调用删除token接口,让token失效
