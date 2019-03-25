@@ -59,6 +59,9 @@
               this.logedIn = false
               this.userInfo = null
               this.$apply()
+
+                //刷新当前页面
+
             }
           } catch (err) {
             console.log(err)
