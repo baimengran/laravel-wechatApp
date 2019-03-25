@@ -23,13 +23,13 @@
         <view class="page__bd">
             <view class="weui-cells weui-cells_after-title">
                 <!--已登录-->
-                <navigator class="weui-cell" wx:if="{{user}}" url>
+                <navigator class="weui-cell" wx:if="{{user}}" url="/pages/users/edit">
                     <view class="weui-cell__hd avatar-warp">
                         <image class="avatar" src="{{user.avatar}}"/>
                     </view>
                     <view class="weui-cell__bd">
                         <view>{{user.name}}</view>
-                        <view class="page__desc">{{user.introduction}}</view>
+                        <view class="page__desc">{{user.introduction?user.introduction:'这家伙很懒什么都没有'}}</view>
                     </view>
                     <view class="page-cell__ft weui-cell__ft_in-access"></view>
                 </navigator>
@@ -73,7 +73,7 @@
     import wepy from 'wepy'
     import api from '@/utils/api'
 
-    export default class User extends wepy.page {
+    export default class UserMe extends wepy.page {
       config = {
         navigationBarTitleText: '我的'
       }
