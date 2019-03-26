@@ -168,10 +168,39 @@ const logout = async (params = {}) => {
   return logoutResponse
 }
 
+/**
+ * 上传文件
+ * @param options
+ * @returns {Promise<*>}
+ */
+const updateFile = async (options = {}) => {
+  // 显示loading
+  wepy.showLoading({title: '文件上传中'})
+
+    // 获取token
+  let accessToken = await getToken()
+
+    // 拼接url
+  options.url = host + '/' + options.url
+  let header = options.header || {}
+    // 将token设置在header中
+  header.Authorization = 'Bearer ' + accessToken
+  options.header = header
+
+    // 上传文件
+  let response = await wepy.uploadFile(options)
+
+    // 隐藏loading
+  wepy.hideLoading()
+
+  return response
+}
+
 export default {
   request, // 普通请求
   login, // 登录
   refreshToken, // 刷新token
   authRequest, // 身份认证求情
-  logout// 退出登录
+  logout, // 退出登录
+  updateFile// 上传文件
 }
