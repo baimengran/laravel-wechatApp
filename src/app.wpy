@@ -51,7 +51,8 @@
           'pages/users/edit',
           'pages/auth/login',
           'pages/auth/register',
-          'pages/topics/show'
+          'pages/topics/show',
+          'pages/topics/userIndex'
         ],
         window: {
           backgroundTextStyle: 'light',

@@ -1,26 +1,4 @@
 <style lang="less">
-    .weui-media-box__info__meta {
-        margin: 0;
-        font-size: 12px;
-    }
-    .topic-info {
-        margin-top: 5px;
-    }
-    .topic-title {
-        white-space: normal;
-        font-size: 14px;
-    }
-    .avatar {
-        padding: 4px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        width: 50px;
-        height: 50px;
-    }
-    .reply-count {
-        background-color: #d8d8d8;
-        float: right;
-    }
     /*分类*/
     .weui-flex {
         align-items: center;
@@ -78,12 +56,12 @@
         <view class="category-list__item">
             <view class="weui-flex category-list__item-hd" @tap="toggle">
                 <view class="weui-flex__item page-title">{{currentCategory.name||'话题'}}</view>
-            <image class="category-list__img" src="/images/category.png"/>
+                <image class="category-list__img" src="/images/category.png"/>
             </view>
             <view class="category-list__item-bd {{categoryOpen?'category-list__item-bd_show':''}}">
                 <view class="weui-cells {{categoryOpen?'weui-cells_show':''}}">
                     <view @tap="changeCategory()" class="weui-cell weui-cell_access {{!currentCategory.id?'category-list__item_selected':''}}">
-                    <view class="weui-cell__bd">话题</view>
+                        <view class="weui-cell__bd">话题</view>
                     </view>
                     <repeat for="{{categories}}" item="category" key="id">
                         <view @tap="changeCategory({{category.id}})" class="weui-cell weui-cell_access {{currentCategory.id==category.id?'category-list__item_selected':''}}">
@@ -97,30 +75,8 @@
 
 
         <view class="page__bd">
-            <view class="weui-panel weui-panel_access">
-                <view class="weui-panel__hd">
-                    <repeat for="{{topics}}" key="id" index="index" item="topic">
-                        <navigator url="/pages/topics/show?id={{topic.id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-                            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                                <image class="weui-media-box_thumb avatar" src="{{topic.user.avatar}}"/>
-                            </view>
-                            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                                <view class="weui-media-box__title topic-title">{{topic.title}}</view>
-
-                                <view class="weui-media-box__info topic-info">
-                                    <view class="weui-media-box__info__meta">{{topic.category.name}}</view>
-                                    <view class="weui-media-box__info__meta">{{topic.user.name}} • </view>
-                                    <view class="weui-media-box__info__meta">{{topic.updated_at_diff}}</view>
-                                </view>
-                            </view>
-                            <view class="weui-badge reply-count">{{topic.reply_count}}</view>
-                        </navigator>
-                    </repeat>
-                    <view class="weui-loadmore weui-loadmore_line" wx:if="{{noMoreData}}">
-                        <view class="weui-loadmore__tips weui-loadmore__tips_in-line">没有更多数据</view>
-                    </view>
-                </view>
-            </view>
+            <!--使用topiclist组件传入requestData数据-->
+            <topiclist :syncData.sync="requestData"></topiclist>
         </view>
     </view>
 </template>
@@ -128,9 +84,9 @@
 <script>
     import wepy from 'wepy'
     import api from '@/utils/api'
-    import util from '@/utils/util'
+    import topicList from '@/components/topicList'
 
-    export default class Index extends wepy.page {
+    export default class TopicIndex extends wepy.page {
       config={
             // 下拉刷新开启
         enablePullDownRefresh: true
@@ -138,7 +94,6 @@
       data = {
         topics: [],
           // 当前分页
-        page: 1,
           // 更多数据
         noMoreData: false,
           // 所有分类
@@ -146,13 +101,20 @@
           // 分类下拉列表开关
         categoryOpen: false,
           // 当前分类
-        currentCategory: {}
+        currentCategory: {},
+        // 传入topiclist组件数据
+        requestData: {}
       }
 
       computed={
         currentCategoryId() {
           return this.currentCategory.id || 0
         }
+      }
+
+      // 使用组件
+      components={
+        topiclist: topicList
       }
 
     /**
@@ -182,54 +144,12 @@
       }
 
         /**
-         * 获取话题列表数据
-         * @param page 分页
-         * @param reset 是否刷新(true false)
-         * @returns {Promise<void>}
-         */
-      async getTopics(page = 1, reset = false) {
-        try {
-              // 请求话题列表接口
-          let topicsResponse = await api.request({
-            url: 'topics',
-            data: {
-              page: page,
-              category_id: this.currentCategoryId,
-              include: 'user,category'
-            }
-          })
-
-          let topics = topicsResponse.data.data
-
-            // 格式化时间
-          topics.forEach(function(topic) {
-            topic.updated_at_diff = util.diffForHumans(topic.updated_at)
-          })
-              // 将数据合并到this.topics,并且如果传入reset参数为true，则覆盖topics
-          this.topics = reset ? topics : this.topics.concat(topics)
-          let pagination = topicsResponse.data.meta.pagination
-
-            // 根据分页设置是否还有更多数据
-          if (pagination.current_page === pagination.total_pages) {
-            this.noMoreData = true
-          }
-          this.$apply()
-        } catch (err) {
-          wepy.showModal({
-            title: '提示',
-            content: '服务器错误，请联系管理员或重试'
-          })
-        }
-      }
-
-        /**
          * 下拉事件
          * @returns {Promise<void>}
          */
       async onPullDownRefresh() {
-        this.page = 1
-        this.noMoreData = false
-        await this.getTopics(1, true)
+        // 调用组件的reload 方法
+        await this.$invoke('topiclist', 'reload')
         wepy.stopPullDownRefresh()
       }
 
@@ -237,33 +157,35 @@
          * 上拉触底事件
          * @returns {Promise<void>}
          */
-      async onReachBottom() {
-      // 如果没有更多内容，直接返回
-        if (this.noMoreData) {
-          return
-        }
-        this.page = this.page + 1
-        await this.getTopics(this.page)
-        this.$apply()
+      onReachBottom() {
+      // 调用组件的loadMore 方法
+        this.$invoke('topiclist', 'loadMore')
       }
 
       methods={
+           // 切换分类展示
         toggle() {
           this.categoryOpen = !this.categoryOpen
         },
+          // 选择分类重新加载话题
         async changeCategory(id = 0) {
               // 找到选中的分类
           this.currentCategory = id ? this.categories.find(category => category.id === id) : {}
          // 点击以后关闭下拉列表
           this.categoryOpen = false
           this.$apply()
-          await this.getTopics(1, true)
+          this.requestData.category_id = this.currentCategoryId
+
+            // 调用组件的reload 方法
+          await this.$invoke('topiclist', 'reload')
         }
       }
 
       async onLoad() {
-        this.getTopics()
+        // 获取分类数据
         this.getCategories()
+          // 调用组件的reload 方法
+        this.$invoke('topiclist', 'reload')
       }
     }
 </script>
