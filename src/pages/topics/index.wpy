@@ -37,8 +37,8 @@
 
                                 <view class="weui-media-box__info topic-info">
                                     <view class="weui-media-box__info__meta">{{topic.category.name}}</view>
-                                    <view class="weui-media-box__info__meta">{{topic.user.name}}</view>
-                                    <view class="weui-media-box__info__meta">{{topic.updated_at}}</view>
+                                    <view class="weui-media-box__info__meta">{{topic.user.name}} • </view>
+                                    <view class="weui-media-box__info__meta">{{topic.updated_at_diff}}</view>
                                 </view>
                             </view>
                             <view class="weui-badge reply-count">{{topic.reply_count}}</view>
@@ -56,6 +56,7 @@
 <script>
     import wepy from 'wepy'
     import api from '@/utils/api'
+    import util from '@/utils/util'
 
     export default class Index extends wepy.page {
       config={
@@ -88,6 +89,11 @@
           })
 
           let topics = topicsResponse.data.data
+
+            // 格式化时间
+          topics.forEach(function(topic) {
+            topic.updated_at_diff = util.diffForHumans(topic.updated_at)
+          })
               // 将数据合并到this.topics,并且如果传入reset参数为true，则覆盖topics
           this.topics = reset ? topics : this.topics.concat(topics)
           let pagination = topicsResponse.data.meta.pagination
@@ -96,7 +102,7 @@
           if (pagination.current_page === pagination.total_pages) {
             this.noMoreData = true
           }
-           this.$apply()
+          this.$apply()
         } catch (err) {
           wepy.showModal({
             title: '提示',
@@ -127,7 +133,7 @@
         }
         this.page = this.page + 1
         await this.getTopics(this.page)
-         this.$apply()
+        this.$apply()
       }
 
       async onLoad() {
