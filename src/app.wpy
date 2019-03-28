@@ -49,10 +49,12 @@
           'pages/topics/index',
           'pages/users/me',
           'pages/users/edit',
+          'pages/users/show',
           'pages/auth/login',
           'pages/auth/register',
           'pages/topics/show',
           'pages/topics/userIndex'
+
         ],
         window: {
           backgroundTextStyle: 'light',

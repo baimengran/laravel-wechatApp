@@ -17,7 +17,7 @@
 
     export default class userIndex extends wepy.page {
       config = {
-        navigationBarTitleText: 'Ta 发布额话题',
+        navigationBarTitleText: 'Ta 发布的话题',
         enablePullDownRefresh: true
       }
       data = {
