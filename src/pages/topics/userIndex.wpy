@@ -28,6 +28,12 @@
         topiclist: topicList
       }
 
+      onShow() {
+        this.$parent.checkRefreshPages(this.getCurrentPages().pop().route, () => {
+          this.$invoke('topiclist', 'reload')
+        })
+      }
+
         /**
          * 页面加载
          * @param options

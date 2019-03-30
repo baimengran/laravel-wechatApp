@@ -151,7 +151,24 @@ const authRequest = async (options, showLoading = true) => {
  * @returns {Promise<any>}
  */
 const logout = async (params = {}) => {
+    // 从缓存中取出token
   let accessToken = wepy.getStorageSync('access_token')
+  let expiredAt = wepy.getStorageSync('access_token_expired_at')
+
+    // 如果token过期了，则调用刷新方法
+  if (accessToken && new Date().getTime() > expiredAt) {
+    let refreshResponse = await refreshToken(accessToken)
+        // 刷新成功
+    if (refreshResponse.statusCode === 200) {
+      accessToken = refreshResponse.data.access_token
+    } else {
+            // 刷新失败，重新调用登录方法，设置token
+      let authResponse = await login()
+      if (authResponse.statusCode === 201) {
+        accessToken = authResponse.data.access_token
+      }
+    }
+  }
     // 调用删除token接口,让token失效
   let logoutResponse = await wepy.request({
     url: host + '/' + 'authorizations/current',
