@@ -53,13 +53,14 @@
           'pages/auth/login',
           'pages/auth/register',
           'pages/topics/show',
-          'pages/topics/userIndex'
+          'pages/topics/userIndex',
+          'pages/comments/index'
 
         ],
         window: {
           backgroundTextStyle: 'light',
           navigationBarBackgroundColor: '#fff',
-          navigationBarTitleText: 'WeChat',
+          navigationBarTitleText: 'Laravel-BlogTwo',
           navigationBarTextStyle: 'black'
         },
         tabBar: {
