@@ -89,9 +89,29 @@
       }
 
       onLaunch() {
-            // wepy.login().then(res => {
-            //   console.log('login: ', res)
-            // })
+            // 启动时调用一次获取未读消息数量
+        this.updateUnreadCount()
+          // 每60秒，调用一次获取未读消息数量
+        setInterval(() => {
+          this.updateUnreadCount()
+        }, 60000)
+      }
+
+/**
+ * 获取未读消息数
+ */
+      async updateUnreadCount() {
+          // 未登录时，不请求
+        if (!this.checkLogin()) {
+          return
+        }
+
+          // 请求消息统计接口
+        let notificationResponse = await api.authRequest('user/notifications/stats', false)
+        // 请求成功，赋值给全局变量unreadCount
+        if (notificationResponse.statusCode === 200) {
+          this.globalData.unreadCount = notificationResponse.data.unread_count
+        }
       }
 
       // 全局变量
