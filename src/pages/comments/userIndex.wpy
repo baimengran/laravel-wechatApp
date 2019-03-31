@@ -15,19 +15,16 @@
                 <view class="weui-panel__bd">
                     <repeat for="{{ replies }}" wx:key="id" index="index" item="reply">
                         <view class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-                            <navigator class="weui-media-box__hd weui-media-box__hd_in-appmsg"
-                                       url="/pages/users/show?id={{ reply.user_id }}">
-                                <image class="replyer-avatar weui-media-box__thumb" src="{{ reply.user.avatar }}"/>
-                            </navigator>
-                            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                                <view class="weui-media-box__title">{{ reply.user.name }}</view>
-                                <view class="weui-media-box__desc">
-                                    <rich-text nodes="{{ reply.content }}" bindtap="tap"></rich-text>
-                                </view>
+                            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                                <image class="replyer-avatar weui-media-box__thumb" src="{{ reply.user.avatar }}" />
+                            </view>
+                            <navigator class="weui-media-box__bd weui-media-box__bd_in-appmsg" url="/pages/topics/show?id={{ reply.topic_id }}">
+                                <view class="weui-media-box__title">{{ reply.topic.title }}</view>
+                                <view class="weui-media-box__desc"><rich-text nodes="{{ reply.content }}" bindtap="tap"></rich-text></view>
                                 <view class="weui-media-box__info">
                                     <view class="weui-media-box__info__meta">{{ reply.created_at_diff }}</view>
                                 </view>
-                            </view>
+                            </navigator>
                         </view>
                     </repeat>
                     <view class="weui-loadmore weui-loadmore_line" wx:if="{{ noMoreData }}">
@@ -43,23 +40,21 @@
     import wepy from 'wepy'
     import commentMixin from '@/mixins/commentMixin'
 
-    export default class commentIndex extends wepy.page {
-      config = {
-            // 下拉列表刷新
+    export default class commentUserIndex extends wepy.page {
+      config={
         enablePullDownRefresh: true,
-            // 页面标题
-        navigationBarTitleText: '回复列表'
+        navigationBarTitleText: '用户回复列表'
       }
-      data = {
-        requestData: {}
-      }
-
       mixins=[commentMixin]
+      data={
+        requestData: {},
+        include: 'user,topic'
+      }
 
       async onLoad(options) {
-            // 获取URL参数中的话题ID
-        this.requestData.url = 'topics/' + options.topic_id + '/comments'
+        this.requestData.url = 'users/' + options.user_id + '/comments'
+        this.requestData.include = 'user,topic'
         this.getReplies()
       }
-}
+    }
 </script>

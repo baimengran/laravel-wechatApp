@@ -54,7 +54,8 @@
           'pages/auth/register',
           'pages/topics/show',
           'pages/topics/userIndex',
-          'pages/comments/index'
+          'pages/comments/index',
+          'pages/comments/userIndex'
 
         ],
         window: {
