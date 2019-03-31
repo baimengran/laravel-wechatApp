@@ -6,6 +6,14 @@
         width: 50px;
         height: 50px;
     }
+
+    .create-reply{
+        width:40px;
+        height:40px;
+        position:fixed;
+        bottom: 30px;
+        right: 30px;
+    }
 </style>
 
 <template>
@@ -35,6 +43,11 @@
                     </view>
                 </view>
             </view>
+
+            <!--回复按钮-->
+            <navigator url="/pages/comments/create?topic_id={{topic.id}}">
+                <image src="/images/commentCreate.png" class="create-reply"/>
+            </navigator>
         </view>
     </view>
 </template>
@@ -51,15 +64,25 @@
         navigationBarTitleText: '回复列表'
       }
       data = {
-        requestData: {}
+        requestData: {},
+        topicId: 0
       }
 
       mixins=[commentMixin]
 
       async onLoad(options) {
+        this.topicId = options.topic_id
             // 获取URL参数中的话题ID
         this.requestData.url = 'topics/' + options.topic_id + '/comments'
         this.getReplies()
+      }
+
+      onShow() {
+        this.$parent.checkRefreshPages(this.getCurrentPages().pop().route, () => {
+          this.noMoreData = false
+          this.page = 1
+          this.getReplies(true)
+        })
       }
 }
 </script>
