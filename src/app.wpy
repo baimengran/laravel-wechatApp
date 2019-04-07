@@ -92,32 +92,34 @@
       onLaunch() {
             // 启动时调用一次获取未读消息数量
         this.updateUnreadCount()
-          // 每60秒，调用一次获取未读消息数量
+            // 每60秒，调用一次获取未读消息数量
         setInterval(() => {
           this.updateUnreadCount()
         }, 60000)
+            // 获取用户权限
+        this.getPerms()
       }
 
-/**
- * 获取未读消息数
- */
+        /**
+         * 获取未读消息数
+         */
       async updateUnreadCount() {
-          // 未登录时，不请求
+            // 未登录时，不请求
         if (!this.checkLogin()) {
           return
         }
 
-          // 请求消息统计接口
+            // 请求消息统计接口
         let notificationResponse = await api.authRequest('user/notifications/stats', false)
-        // 请求成功，赋值给全局变量unreadCount
+            // 请求成功，赋值给全局变量unreadCount
         if (notificationResponse.statusCode === 200) {
           this.globalData.unreadCount = notificationResponse.data.unread_count
         }
       }
 
-      // 全局变量
-      globalData={
-          // 判断需要刷新的页面
+        // 全局变量
+      globalData = {
+            // 判断需要刷新的页面
         refreshPages: []
       }
 
@@ -136,7 +138,7 @@
          */
       async getCurrentUser() {
             // 如果用户未登录
-        if (!this.checkLogin()) {
+        if (!await this.checkLogin()) {
           return null
         }
 
@@ -167,8 +169,62 @@
          * 用户是否已经登录
          * @returns {boolean}
          */
-      checkLogin() {
-        return (wepy.getStorageSync('access_token') !== '')
+      async checkLogin() {
+        let accessToken = wepy.getStorageSync('access_token')
+        let expiredAt = wepy.getStorageSync('access_token_expired_at')
+            // 如果token过期了，则调用刷新方法
+        if (accessToken !== '' && expiredAt !== '') {
+          if (new Date().getTime() > expiredAt) {
+            let refreshResponse = await api.refreshToken(accessToken)
+            if (refreshResponse.statusCode !== 200) {
+              return false
+            }
+          }
+          return true
+        }
+        return false
+      }
+
+      /**
+       * 判断用户权限
+       */
+      can(targetPerm) {
+        if (!this.checkLogin()) {
+          return false
+        }
+          // 获取缓存中的权限
+        let perms = wepy.getStorageSync('perms') || []
+          // 判断权限中是否有目标权限
+        if (perms.find(perm => perm.name === targetPerm)) {
+          return true
+        }
+        return false
+      }
+
+        /**
+         * 获取权限
+         * @returns {Promise<Array>}
+         */
+      async getPerms() {
+        let perms = []
+        if (!this.checkLogin()) {
+          return perms
+        }
+
+        try {
+          let permsResponse = await api.authRequest('user/permissions', false)
+                // 请求成功，放入storage缓存中
+          if (permsResponse.statusCode === 200) {
+            perms = permsResponse.data.data
+            wepy.setStorageSync('perms', perms)
+          }
+        } catch (err) {
+          wepy.showModal({
+            title: '提示',
+            content: '获取用户权限失败，可重启小程序再次获取'
+          })
+        }
+        return perms
       }
 }
 

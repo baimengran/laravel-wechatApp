@@ -106,6 +106,8 @@
 
                     // 201表示登录正确，返回上一页
             if (authResponse.statusCode === 201) {
+                // 获取用户权限
+              this.$parent.getPerms()
               wepy.navigateBack()
             }
           } catch (err) {
@@ -125,6 +127,8 @@
 
                 // 登录成功返回上一页
           if (authResponse.statusCode === 201) {
+              // 获取用户权限
+            this.$parent.getPerms()
             wepy.navigateBack()
           }
         } catch (err) {
