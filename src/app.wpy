@@ -89,15 +89,15 @@
         this.use('promisify')
       }
 
-      onLaunch() {
+      async onLaunch() {
             // 启动时调用一次获取未读消息数量
-        this.updateUnreadCount()
+        await this.updateUnreadCount()
             // 每60秒，调用一次获取未读消息数量
         setInterval(() => {
           this.updateUnreadCount()
         }, 60000)
             // 获取用户权限
-        this.getPerms()
+        await this.getPerms()
       }
 
         /**
@@ -105,7 +105,7 @@
          */
       async updateUnreadCount() {
             // 未登录时，不请求
-        if (!this.checkLogin()) {
+        if (!await this.checkLogin()) {
           return
         }
 
@@ -172,6 +172,7 @@
       async checkLogin() {
         let accessToken = wepy.getStorageSync('access_token')
         let expiredAt = wepy.getStorageSync('access_token_expired_at')
+        console.log(new Date().getTime())
             // 如果token过期了，则调用刷新方法
         if (accessToken !== '' && expiredAt !== '') {
           if (new Date().getTime() > expiredAt) {
@@ -207,7 +208,7 @@
          */
       async getPerms() {
         let perms = []
-        if (!this.checkLogin()) {
+        if (!await this.checkLogin()) {
           return perms
         }
 

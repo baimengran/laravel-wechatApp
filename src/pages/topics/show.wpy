@@ -210,6 +210,22 @@
         }
       }
 
+      onShareAppMessage(res) {
+        return {
+          title: this.topic.title,
+          path: '/pages/topics/show?id' + this.topic.id,
+          imageUrl: this.topic.user.avatar,
+          success: function(res) {
+                  // 转发成功
+            console.log(res)
+          },
+          fail: function(res) {
+                  // 转发失败
+            console.log(res)
+          }
+        }
+      }
+
       async onLoad(options) {
         this.getTopic(options.id)
 
