@@ -41,6 +41,13 @@ module.exports = {
     }
   },
   plugins: {
+    replace:{
+      filter:/\.js$/,
+        config:{
+        find:/__BASE_URL__/g,
+            replace:prod?"'https://we.blogbai.club/api'":"'http://www.blogtwo.bai/api'"
+        }
+    }
   },
   appConfig: {
     noPromiseAPI: ['createSelectorQuery']
@@ -69,6 +76,13 @@ if (prod) {
           quality: 80
         }
       }
-    }
+    },
+      replace:{
+      filter:/\.js$/,
+          config:{
+        find:/__BASE_URL__/g,
+        replace:prod?"'https://we.blogbai.club/api'":"'http://www.blogtwo.bai/api'"
+          }
+      }
   }
 }

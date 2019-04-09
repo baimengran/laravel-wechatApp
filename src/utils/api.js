@@ -1,7 +1,8 @@
 import wepy from 'wepy'
 
 // 服务器接口地址
-const host = 'http://www.blogtwo.bai/api'
+/* global __BASE_URL__ */
+const host = __BASE_URL__
 
 /**
  * 普通请求
